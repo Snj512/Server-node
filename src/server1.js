@@ -1,24 +1,29 @@
-const http = require('http');
-const express = require('express');
-const dotenv = require('dotenv').config();
-const dbconnect = require('./config/dbconnect');
+require("dotenv").config();
+require("reflect-metadata");
 
-dbconnect();
+const express = require("express");
+const AppDataSource = require("./config/dbconnect");
+const authRoutes = require("./routes/auth");
+const rbacRoutes = require("./routes/rbac");
 
 const app = express();
+app.use(express.json());
 
-//services
-app.use(express.json()); 
+// Routes
+app.use("/api/auth", authRoutes);
+app.use("/api/verify", rbacRoutes);
 
-//routes
-
-//server
+// DB + Server start
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
 
+AppDataSource.initialize()
+  .then(() => {
+    console.log(" Database connected");
 
-// const server =  http.createServer((req,res) =>{
-//     console.log(req);
-// });
+    app.listen(PORT, () => {
+      console.log(` Server running on port ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("DB connection error:", err);
+  });
