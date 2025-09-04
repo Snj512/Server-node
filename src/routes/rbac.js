@@ -14,7 +14,7 @@ router.get("/manager", verifyToken, authrole("admin","manager"), (req, res) => {
   res.json({message: 'Admin & Managers Access Granted'});
 });
 //User Access
-router.get("/user", verifyToken, authrole("admin","manager","user"), (req, res) => {
+router.get("/user", verifyToken, authrole("admin", "manager", "user"), (req, res) => {
   res.json({message: 'All Access Granted'});
 });
 
